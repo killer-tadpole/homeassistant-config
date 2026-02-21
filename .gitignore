@@ -35,3 +35,9 @@ tmp/
 
 # Cloud / SSL certs (sensitive)
 .cloud/
+
+# Nest camera event snapshots
+nest/
+
+# Claude Code settings
+.claude/
