@@ -597,10 +597,6 @@
     data:
       message: After Climbing Hot Water - 30min
       title: Hot Water
-  - service: notify.mobile_app_iphone_8
-    data:
-      title: Hot Water
-      message: After Climbing Hot Water - 30min
   - service: tado.set_water_heater_timer
     target:
       entity_id: water_heater.hot_water
@@ -626,10 +622,6 @@
     - thu
     - fri
   actions:
-  - data:
-      message: Colin will be home at {{ (now() | as_timestamp + ( states.sensor.waterloo_to_home.state
-        | int) *60) |timestamp_custom("%H:%M", True)  }}
-    action: notify.mobile_app_iphone_8
   - data:
       message: Colin will be home at {{ (now() | as_timestamp + ( states.sensor.waterloo_to_home.state
         | int) *60) |timestamp_custom("%H:%M", True)  }}

@@ -64,16 +64,3 @@ disable_landing_motion:
     target:
       entity_id: input_boolean.landing_light_override
   mode: single
-mute_toggle:
-  alias: Mute Toggle
-  fields:
-    media_player:
-      description: Media Player that will be mute or unmuted
-      example: media_player.sonos_arc
-  sequence:
-  - service: media_player.volume_mute
-    target:
-      entity_id: '{{ media_player }}'
-    data:
-      is_volume_muted: '{{ not state_attr(media_player , ''is_volume_muted'') }}'
-  mode: single
