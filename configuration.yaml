@@ -79,66 +79,6 @@ template:
             {% endif %}
           {% endif %}
 
-  - cover:
-    - device_class: shade
-      open_cover:
-      - target:
-          entity_id:
-          - cover.wall
-        action: cover.open_cover
-      close_cover:
-      - target:
-          entity_id:
-          - cover.wall
-        action: cover.close_cover
-      default_entity_id: cover.wall_blind
-      name: Wall Blind
-
-  - cover:
-    - device_class: shade
-      open_cover:
-      - target:
-          entity_id:
-          - cover.middle
-        action: cover.open_cover
-      close_cover:
-      - target:
-          entity_id:
-          - cover.middle
-        action: cover.close_cover
-      default_entity_id: cover.middle_blind
-      name: Middle Blind
-
-  - cover:
-    - device_class: shade
-      open_cover:
-      - target:
-          entity_id:
-          - cover.door
-        action: cover.open_cover
-      close_cover:
-      - target:
-          entity_id:
-          - cover.door
-        action: cover.close_cover
-      default_entity_id: cover.door_blind
-      name: Door Blind
-
-  - cover:
-    - device_class: shade
-      open_cover:
-      - target:
-          entity_id:
-          - cover.kitchen
-        action: cover.open_cover
-      close_cover:
-      - target:
-          entity_id:
-          - cover.kitchen
-        action: cover.close_cover
-      default_entity_id: cover.kitchen_blind
-      name: Kitchen Blind
-
 
 # --- INTEGRATION SENSORS ---
 sensor:
