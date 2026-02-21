@@ -160,24 +160,6 @@ sensor:
     unit_prefix: k
     round: 2
 
-  #- platform: template
-  #  sensors:
-  #    dishwasher_state:
-  #      friendly_name: Dishwasher State
-  #      value_template: >
-  #        {% set s = states('sensor.dishwasher_state') %}
-  #        {% set p = states('sensor.dishwasher_power') %}
-  #        {% if p == 'unavailable' %}
-  #          unavailable
-  #        {% else %}
-  #          {% set p = p | int %}
-  #          {% if p == 0 %} off
-  #          {% elif p <= 7 %} standby
-  #          {% elif p > 7 %} run
-  #          {% else %} {{ s }}
-  #          {% endif %}
-  #        {% endif %}
-
 command_line:
   - sensor:
       name: "bin_collection"

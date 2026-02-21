@@ -267,18 +267,7 @@
       != utcnow().day }}
 
       '
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: binary_sensor.kitchen_windows
-      state: 'off'
-    enabled: false
   actions:
-  - device_id: 40d1fbf245321e555ed5ca8899f158ea
-    domain: cover
-    entity_id: cover.kitchen
-    type: close
-    enabled: false
   - data: {}
     action: cover.close_cover
     target:
@@ -299,12 +288,6 @@
       != utcnow().day }}
 
       '
-  - type: is_not_open
-    condition: device
-    device_id: 0478ec94d38b5e8ec501b65aac1ba1b3
-    entity_id: binary_sensor.bifold_door
-    domain: binary_sensor
-    enabled: false
   actions:
   - action: input_boolean.turn_on
     metadata: {}
