@@ -681,23 +681,39 @@
   mode: single
 - id: '1650315246109'
   alias: Garden Sprinkler
-  description: Runs Tue/Fri unless rain forecast. Stops at target litres or max time.
-  trigger:
+  description: >-
+    Scheduled Tue/Fri (skips if rain forecast) or triggered manually via
+    input_boolean.sprinkler. Stops at target litres, max time, or manual off.
+  triggers:
   - platform: time
     at: 06:45
-  condition:
-  - condition: template
-    value_template: '{{ state_attr(''weather.45a_horsell_moor_hourly'', ''forecast'')
-      | sum(attribute=''precipitation'') <= 3 }}'
-  - condition: time
-    weekday:
-    - tue
-    - fri
+    id: schedule
+  - platform: state
+    entity_id: input_boolean.sprinkler
+    to: 'on'
+    id: manual
+  conditions:
+  - condition: or
+    conditions:
+    - condition: trigger
+      id: manual
+    - condition: and
+      conditions:
+      - condition: template
+        value_template: '{{ state_attr(''weather.45a_horsell_moor_hourly'', ''forecast'')
+          | sum(attribute=''precipitation'') <= 3 }}'
+      - condition: time
+        weekday:
+        - tue
+        - fri
   - condition: template
     value_template: "{{ states('input_number.water_quantity') | float(0) > 0 }}"
   variables:
     start_usage: "{{ states('sensor.hosepipe_usage') | float(0) }}"
-  action:
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.sprinkler
   - type: turn_on
     device_id: 945a64d3fdc7c8f9643f2b795deb0b46
     entity_id: switch.watering_valve
@@ -707,6 +723,11 @@
       value_template: >-
         {{ (states('sensor.hosepipe_usage') | float(0) - start_usage) * 1000
         >= states('input_number.water_quantity') | float(50) }}
+      id: quantity
+    - platform: state
+      entity_id: input_boolean.sprinkler
+      to: 'off'
+      id: manual_stop
     timeout:
       minutes: "{{ states('input_number.water_timer') | int(20) }}"
     continue_on_timeout: true
@@ -714,12 +735,17 @@
     device_id: 945a64d3fdc7c8f9643f2b795deb0b46
     entity_id: switch.watering_valve
     domain: switch
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.sprinkler
   - data:
       title: Garden Sprinkler
       message: >-
         Watering complete. Used {{ ((states('sensor.hosepipe_usage') | float(0)
         - start_usage) * 1000) | round(1) }}L
-        ({{ 'target reached' if wait.completed else 'time limit reached' }})
+        ({{ 'target reached' if wait.trigger.id == 'quantity' else
+        'manually stopped' if wait.trigger.id == 'manual_stop' else
+        'time limit reached' }})
     action: notify.mobile_app_colin_s_phone
   mode: single
 - id: '1658578038834'
