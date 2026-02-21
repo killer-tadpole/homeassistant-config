@@ -556,7 +556,7 @@
   - type: not_opened
     platform: device
     device_id: 723c00aa4e8d6bf68e026a11e42bccfc
-    entity_id: 223eff2233ea9a8e88f9617006e76d3e
+    entity_id: binary_sensor.frontdoor
     domain: binary_sensor
     id: Close
   condition: []
@@ -1463,6 +1463,12 @@
   - trigger: state
     entity_id:
     - sensor.ups_status
+    not_from:
+      - unavailable
+      - unknown
+    not_to:
+      - unavailable
+      - unknown
   conditions: []
   actions:
   - action: notify.mobile_app_colin_s_phone
