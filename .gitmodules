@@ -1,0 +1,3 @@
+[submodule "scripts/BinDay"]
+	path = scripts/BinDay
+	url = git@github.com:killer-tadpole/BinDay.git

@@ -1,0 +1,79 @@
+if_tv_then_light:
+  alias: If TV then Light
+  sequence:
+  - if:
+    - condition: device
+      type: is_off
+      device_id: cecf9c3c6fedaf0f43d7cbfff34764a9
+      entity_id: light.hue_color_lamp_1
+      domain: light
+    - condition: or
+      conditions:
+      - condition: device
+        device_id: fea498d3090fbd620f235c9caeab2e62
+        domain: media_player
+        entity_id: media_player.living_room_tv
+        type: is_on
+      - type: is_occupied
+        condition: device
+        device_id: 466bdc667d012c8b5ce4d7221db3526d
+        entity_id: 385f5a8eebe7bb92f7e35e44442ee0eb
+        domain: binary_sensor
+    then:
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - data:
+        transition: 3
+      target:
+        entity_id: scene.tv_lights
+      action: scene.turn_on
+  mode: restart
+disable_landing_motion:
+  alias: Disable Landing Motion
+  sequence:
+  - type: turn_off
+    device_id: f43f36014b72f452b7b1369601f1bacf
+    entity_id: switch.landing_sensor_motion
+    domain: switch
+  - service: light.turn_on
+    data:
+      transition: 1
+      brightness_pct: 100
+      kelvin: 6500
+    target:
+      entity_id: light.landing_light
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - input_boolean.landing_light_override
+      from:
+    timeout:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - type: turn_on
+    device_id: f43f36014b72f452b7b1369601f1bacf
+    entity_id: switch.landing_sensor_motion
+    domain: switch
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.landing_light_override
+  mode: single
+mute_toggle:
+  alias: Mute Toggle
+  fields:
+    media_player:
+      description: Media Player that will be mute or unmuted
+      example: media_player.sonos_arc
+  sequence:
+  - service: media_player.volume_mute
+    target:
+      entity_id: '{{ media_player }}'
+    data:
+      is_volume_muted: '{{ not state_attr(media_player , ''is_volume_muted'') }}'
+  mode: single

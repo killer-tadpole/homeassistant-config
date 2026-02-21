@@ -1,0 +1,37 @@
+# Sensitive
+secrets.yaml
+
+# Databases
+*.db
+*.db-shm
+*.db-wal
+*.db-old
+
+# Logs
+*.log
+*.log.*
+*.fault
+
+# Dependencies
+deps/
+
+# Backups
+backups/
+tmp_backups/
+
+# Cache / generated
+tts/
+image/
+__pycache__/
+*.pyc
+
+# Binaries
+go2rtc-*
+
+# Temporary / runtime
+tmp/
+.storage/
+.ha_run.lock
+
+# Cloud / SSL certs (sensitive)
+.cloud/
