@@ -718,7 +718,7 @@
     type: camera_person
     id: Person
   - platform: zone
-    entity_id: device_tracker.colin_s_phone
+    entity_id: person.colin
     zone: zone.home
     event: enter
   condition:
@@ -1424,7 +1424,7 @@
     entity_id: 385f5a8eebe7bb92f7e35e44442ee0eb
     domain: binary_sensor
     trigger: device
-    id: Occuppied
+    id: Occupied
   conditions:
   - condition: device
     device_id: fea498d3090fbd620f235c9caeab2e62
@@ -1437,7 +1437,7 @@
       conditions:
       - condition: trigger
         id:
-        - Occuppied
+        - Occupied
       - condition: state
         entity_id: media_player.living_room_tv
         state:
