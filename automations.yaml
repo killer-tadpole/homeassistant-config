@@ -493,9 +493,9 @@
         action: notify.mobile_app_colin_s_phone
   mode: single
 - id: '1634991332176'
-  alias: 'Notify - Dishwasher '
+  alias: Notify - Dishwasher
   description: ''
-  trigger:
+  triggers:
   - platform: state
     entity_id: sensor.dishwasher_state
     from: run
@@ -504,18 +504,26 @@
       hours: 0
       minutes: 5
       seconds: 0
-  condition: []
-  action:
-  - service: notify.mobile_app_colin_s_phone
-    data:
-      message: Cycle Finished
-      title: Dishwasher
-    enabled: true
-  - service: notify.mobile_app_jelenas_phone
-    data:
-      title: Dishwasher
-      message: Cycle Finished
-    enabled: true
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: person.colin
+      state: home
+    then:
+    - data:
+        title: Dishwasher
+        message: Cycle Finished
+      action: notify.mobile_app_colin_s_phone
+  - if:
+    - condition: state
+      entity_id: person.jelena
+      state: home
+    then:
+    - data:
+        title: Dishwasher
+        message: Cycle Finished
+      action: notify.mobile_app_iphone_12pro_jelly
   mode: single
 - id: '1641930182412'
   alias: Notify - Low Battery
