@@ -625,16 +625,38 @@
   - data:
       title: Commute Home
       message: >-
-        {% set dest = state_attr('sensor.train_schedule_wat_wok', 'destinations') %}
-        {% set train_eta = dest[0]['time_at_destination'] | as_timestamp(none) if dest else none %}
-        {% set eta = (train_eta + 12 * 60) if train_eta else none %}
-        {% if eta %}Colin will be home at {{ eta | timestamp_custom("%H:%M", True) }}{% else %}No train data available{% endif %}
+        {%- set trains = state_attr('sensor.train_schedule_wat_wok', 'trains') | default([]) -%}
+        {%- set valid = trains | rejectattr('expected', 'equalto', 'Cancelled') | list -%}
+        {%- if valid | length > 0 -%}
+          {%- set t1 = valid[0] -%}
+          {%- set t1_exp = t1.expected | as_timestamp(none) -%}
+          {%- set mins1 = ((t1_exp - now().timestamp()) / 60) | int if t1_exp else none -%}
+          {%- set dep1 = mins1 ~ 'min' if mins1 is not none else 'Delayed' -%}
+          {%- set plat1 = t1.platform if t1.platform else 'TBC' -%}
+          {%- set dest1 = t1.destinations[0].time_at_destination | as_timestamp(none) if t1.destinations else none -%}
+          {%- set eta1 = (dest1 + 720) | timestamp_custom('%H:%M', True) if dest1 else '?' -%}
+          {%- set ns = namespace(msg='Next train: ' ~ dep1 ~ ' | Platform ' ~ plat1 ~ ' | Home ' ~ eta1) -%}
+          {%- if mins1 is not none and mins1 < 5 and valid | length > 1 -%}
+            {%- set t2 = valid[1] -%}
+            {%- set t2_exp = t2.expected | as_timestamp(none) -%}
+            {%- set mins2 = ((t2_exp - now().timestamp()) / 60) | int if t2_exp else none -%}
+            {%- set dep2 = mins2 ~ 'min' if mins2 is not none else 'Delayed' -%}
+            {%- set plat2 = t2.platform if t2.platform else 'TBC' -%}
+            {%- set dest2 = t2.destinations[0].time_at_destination | as_timestamp(none) if t2.destinations else none -%}
+            {%- set eta2 = (dest2 + 720) | timestamp_custom('%H:%M', True) if dest2 else '?' -%}
+            {%- set ns.msg = ns.msg ~ '\n' ~ 'Following: ' ~ dep2 ~ ' | Platform ' ~ plat2 ~ ' | Home ' ~ eta2 -%}
+          {%- endif -%}
+          {{ ns.msg }}
+        {%- else -%}
+          No trains available
+        {%- endif -%}
     action: notify.mobile_app_colin_s_phone
   - data:
       timestamp: >-
-        {% set dest = state_attr('sensor.train_schedule_wat_wok', 'destinations') %}
-        {% set train_eta = dest[0]['time_at_destination'] | as_timestamp(none) if dest else none %}
-        {{ (train_eta + 12 * 60) if train_eta else now().timestamp() + 3600 }}
+        {%- set trains = state_attr('sensor.train_schedule_wat_wok', 'trains') | default([]) -%}
+        {%- set valid = trains | rejectattr('expected', 'equalto', 'Cancelled') | list -%}
+        {%- set dest = valid[0].destinations[0].time_at_destination | as_timestamp(none) if valid and valid[0].destinations else none -%}
+        {{ (dest + 720) if dest else now().timestamp() + 3600 }}
     target:
       entity_id: input_datetime.colin_eta
     action: input_datetime.set_datetime
