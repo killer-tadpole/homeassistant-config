@@ -623,12 +623,18 @@
     - fri
   actions:
   - data:
-      message: Colin will be home at {{ (now() | as_timestamp + ( states.sensor.waterloo_to_home.state
-        | int) *60) |timestamp_custom("%H:%M", True)  }}
+      title: Commute Home
+      message: >-
+        {% set dest = state_attr('sensor.train_schedule_wat_wok', 'destinations') %}
+        {% set train_eta = dest[0]['time_at_destination'] | as_timestamp(none) if dest else none %}
+        {% set eta = (train_eta + 12 * 60) if train_eta else none %}
+        {% if eta %}Colin will be home at {{ eta | timestamp_custom("%H:%M", True) }}{% else %}No train data available{% endif %}
     action: notify.mobile_app_colin_s_phone
   - data:
-      timestamp: '{{ (now().timestamp() + ( states.sensor.waterloo_to_home.state |
-        int) * 60) }}'
+      timestamp: >-
+        {% set dest = state_attr('sensor.train_schedule_wat_wok', 'destinations') %}
+        {% set train_eta = dest[0]['time_at_destination'] | as_timestamp(none) if dest else none %}
+        {{ (train_eta + 12 * 60) if train_eta else now().timestamp() + 3600 }}
     target:
       entity_id: input_datetime.colin_eta
     action: input_datetime.set_datetime
