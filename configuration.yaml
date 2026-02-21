@@ -31,8 +31,6 @@ light:
       - light.living_room_spot_door
       - light.living_room_spot_middle
 
-sensor:
-
 # --- TEMPLATE SENSORS ---
 template:
   - sensor:
