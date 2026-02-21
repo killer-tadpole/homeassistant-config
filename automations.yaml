@@ -227,8 +227,7 @@
     domain: light
   - if:
     - condition: template
-      value_template: "  {{ state_attr('automation.living_room_blind_down','last_triggered').day
-        ==\n  utcnow().day }}"
+      value_template: "{{ state_attr('automation.blinds_living_room_close','last_triggered').day == utcnow().day }}"
     then:
     - action: scene.turn_on
       metadata: {}
@@ -284,10 +283,8 @@
     trigger: numeric_state
   conditions:
   - condition: template
-    value_template: '{{ state_attr(''automation.living_room_blind_down'',''last_triggered'').day
-      != utcnow().day }}
-
-      '
+    value_template: '{{ state_attr(''automation.blinds_living_room_close'',''last_triggered'').day
+      != utcnow().day }}'
   actions:
   - action: input_boolean.turn_on
     metadata: {}
@@ -380,9 +377,9 @@
     trigger: numeric_state
   conditions:
   - condition: template
-    value_template: "{{ state_attr('automation.living_room_blind_down', 'last_triggered')\n
-      \  is not none and\n   state_attr('automation.living_room_blind_down', 'last_triggered').day\n
-      \  != utcnow().day }}\n"
+    value_template: >-
+      {{ state_attr('automation.blinds_living_room_close', 'last_triggered') is not none and
+         state_attr('automation.blinds_living_room_close', 'last_triggered').day != utcnow().day }}
   actions:
   - choose:
     - conditions:
@@ -1299,7 +1296,7 @@
   - platform: time
     at: '18:00:00'
   - platform: zone
-    entity_id: device_tracker.colin_s_phone_2
+    entity_id: person.colin
     zone: zone.home
     event: enter
   condition:
@@ -1309,17 +1306,16 @@
     below: 2
     attribute: days_until
   action:
-  - parallel:
-    - if:
-      - condition: state
-        entity_id: person.colin
-        state: home
-      then:
-      - service: notify.mobile_app_colin_s_phone
-        data:
-          message: '{{ state_attr(''sensor.bin_collection'', ''next_colour'') }} bin
-            collected tomorrow ({{ states(''sensor.bin_collection'')}})'
-          title: Bin Day Tomorrow
+  - if:
+    - condition: state
+      entity_id: person.colin
+      state: home
+    then:
+    - service: notify.mobile_app_colin_s_phone
+      data:
+        message: '{{ state_attr(''sensor.bin_collection'', ''next_colour'') }} bin
+          collected tomorrow ({{ states(''sensor.bin_collection'')}})'
+        title: Bin Day Tomorrow
   mode: single
 - id: '1693749033353'
   alias: Lights - Landing Overrid Button
