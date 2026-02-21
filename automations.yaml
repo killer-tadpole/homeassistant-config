@@ -681,7 +681,7 @@
   mode: single
 - id: '1650315246109'
   alias: Garden Sprinkler
-  description: ''
+  description: Runs Tue/Fri unless rain forecast. Stops at target litres or max time.
   trigger:
   - platform: time
     at: 06:45
@@ -693,20 +693,34 @@
     weekday:
     - tue
     - fri
+  - condition: template
+    value_template: "{{ states('input_number.water_quantity') | float(0) > 0 }}"
+  variables:
+    start_usage: "{{ states('sensor.hosepipe_usage') | float(0) }}"
   action:
   - type: turn_on
     device_id: 945a64d3fdc7c8f9643f2b795deb0b46
     entity_id: switch.watering_valve
     domain: switch
-  - delay:
-      hours: 0
-      minutes: 20
-      seconds: 0
-      milliseconds: 0
+  - wait_for_trigger:
+    - platform: template
+      value_template: >-
+        {{ (states('sensor.hosepipe_usage') | float(0) - start_usage) * 1000
+        >= states('input_number.water_quantity') | float(50) }}
+    timeout:
+      minutes: "{{ states('input_number.water_timer') | int(20) }}"
+    continue_on_timeout: true
   - type: turn_off
     device_id: 945a64d3fdc7c8f9643f2b795deb0b46
     entity_id: switch.watering_valve
     domain: switch
+  - data:
+      title: Garden Sprinkler
+      message: >-
+        Watering complete. Used {{ ((states('sensor.hosepipe_usage') | float(0)
+        - start_usage) * 1000) | round(1) }}L
+        ({{ 'target reached' if wait.completed else 'time limit reached' }})
+    action: notify.mobile_app_colin_s_phone
   mode: single
 - id: '1658578038834'
   alias: Lights - Front Garden Person
