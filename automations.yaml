@@ -876,11 +876,11 @@
   - action: climate.set_preset_mode
     target:
       entity_id:
-      - climate.tado_bathroom
-      - climate.tado_bedroom
-      - climate.tado_landing_2
-      - climate.tado_office
-      - climate.tado_spare_room
+      - climate.bathroom_radiator
+      - climate.tado_smart_radiator_thermostat_va3500560384
+      - climate.landing_radiator
+      - climate.office_radiator
+      - climate.spare_room_radiator
     data:
       preset_mode: home
   - action: climate.set_preset_mode
@@ -1758,11 +1758,11 @@
   - action: climate.set_preset_mode
     target:
       entity_id:
-      - climate.tado_bathroom
-      - climate.tado_landing_2
-      - climate.tado_bedroom
-      - climate.tado_office
-      - climate.tado_spare_room
+      - climate.bathroom_radiator
+      - climate.landing_radiator
+      - climate.tado_smart_radiator_thermostat_va3500560384
+      - climate.office_radiator
+      - climate.spare_room_radiator
     data:
       preset_mode: away
   mode: single
