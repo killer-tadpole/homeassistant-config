@@ -227,7 +227,8 @@
     domain: light
   - if:
     - condition: template
-      value_template: "{{ state_attr('automation.blinds_living_room_close','last_triggered').day == utcnow().day }}"
+      value_template: '{{ state_attr(''automation.blinds_living_room_close'',''last_triggered'').day
+        == utcnow().day }}'
     then:
     - action: scene.turn_on
       metadata: {}
@@ -377,9 +378,9 @@
     trigger: numeric_state
   conditions:
   - condition: template
-    value_template: >-
-      {{ state_attr('automation.blinds_living_room_close', 'last_triggered') is not none and
-         state_attr('automation.blinds_living_room_close', 'last_triggered').day != utcnow().day }}
+    value_template: "{{ state_attr('automation.blinds_living_room_close', 'last_triggered')
+      is not none and\n   state_attr('automation.blinds_living_room_close', 'last_triggered').day
+      != utcnow().day }}"
   actions:
   - choose:
     - conditions:
@@ -590,7 +591,7 @@
     event: leave
   conditions:
   - condition: time
-    after: '06:00'
+    after: 06:00
     before: '23:00'
   actions:
   - action: input_boolean.turn_on
@@ -623,60 +624,54 @@
     - fri
   actions:
   - if:
-      - condition: trigger
-        id: leave
+    - condition: trigger
+      id: leave
     then:
-      - data:
-          message: clear_notification
-          data:
-            tag: commute_home
-        action: notify.mobile_app_colin_s_phone
+    - data:
+        message: clear_notification
+        data:
+          tag: commute_home
+      action: notify.mobile_app_colin_s_phone
     else:
-      - data:
-          title: Commute Home
-          data:
-            tag: commute_home
-          message: >-
-            {%- set trains = state_attr('sensor.train_schedule_wat_wok', 'trains') | default([]) -%}
-            {%- set valid = trains | rejectattr('expected', 'equalto', 'Cancelled') | list -%}
-            {%- if valid | length > 0 -%}
-              {%- set t1 = valid[0] -%}
-              {%- set t1_exp = t1.expected | as_timestamp(none) -%}
-              {%- set mins1 = ((t1_exp - now().timestamp()) / 60) | int if t1_exp else none -%}
-              {%- set dep1 = mins1 ~ 'min' if mins1 is not none else 'Delayed' -%}
-              {%- set plat1 = t1.platform if t1.platform else 'TBC' -%}
-              {%- set dest1 = t1.destinations[0].time_at_destination | as_timestamp(none) if t1.destinations else none -%}
-              {%- set eta1 = (dest1 + 720) | timestamp_custom('%H:%M', True) if dest1 else '?' -%}
-              {%- set ns = namespace(msg='Next train: ' ~ dep1 ~ ' | Platform ' ~ plat1 ~ ' | Home ' ~ eta1) -%}
-              {%- if mins1 is not none and mins1 < 5 and valid | length > 1 -%}
-                {%- set t2 = valid[1] -%}
-                {%- set t2_exp = t2.expected | as_timestamp(none) -%}
-                {%- set mins2 = ((t2_exp - now().timestamp()) / 60) | int if t2_exp else none -%}
-                {%- set dep2 = mins2 ~ 'min' if mins2 is not none else 'Delayed' -%}
-                {%- set plat2 = t2.platform if t2.platform else 'TBC' -%}
-                {%- set dest2 = t2.destinations[0].time_at_destination | as_timestamp(none) if t2.destinations else none -%}
-                {%- set eta2 = (dest2 + 720) | timestamp_custom('%H:%M', True) if dest2 else '?' -%}
-                {%- set ns.msg = ns.msg ~ '\n' ~ 'Following: ' ~ dep2 ~ ' | Platform ' ~ plat2 ~ ' | Home ' ~ eta2 -%}
-              {%- endif -%}
-              {{ ns.msg }}
-            {%- else -%}
-              No trains available
-            {%- endif -%}
-        action: notify.mobile_app_colin_s_phone
-      - data:
-          timestamp: >-
-            {%- set trains = state_attr('sensor.train_schedule_wat_wok', 'trains') | default([]) -%}
-            {%- set valid = trains | rejectattr('expected', 'equalto', 'Cancelled') | list -%}
-            {%- set dest = valid[0].destinations[0].time_at_destination | as_timestamp(none) if valid and valid[0].destinations else none -%}
-            {{ (dest + 720) if dest else now().timestamp() + 3600 }}
-        target:
-          entity_id: input_datetime.colin_eta
-        action: input_datetime.set_datetime
+    - data:
+        title: Commute Home
+        data:
+          tag: commute_home
+        message: "{%- set trains = state_attr('sensor.train_schedule_wat_wok', 'trains')
+          | default([]) -%} {%- set valid = trains | rejectattr('expected', 'equalto',
+          'Cancelled') | list -%} {%- if valid | length > 0 -%}\n  {%- set t1 = valid[0]
+          -%}\n  {%- set t1_exp = t1.expected | as_timestamp(none) -%}\n  {%- set
+          mins1 = ((t1_exp - now().timestamp()) / 60) | int if t1_exp else none -%}\n
+          \ {%- set dep1 = mins1 ~ 'min' if mins1 is not none else 'Delayed' -%}\n
+          \ {%- set plat1 = t1.platform if t1.platform else 'TBC' -%}\n  {%- set dest1
+          = t1.destinations[0].time_at_destination | as_timestamp(none) if t1.destinations
+          else none -%}\n  {%- set eta1 = (dest1 + 720) | timestamp_custom('%H:%M',
+          True) if dest1 else '?' -%}\n  {%- set ns = namespace(msg='Next train: '
+          ~ dep1 ~ ' | Platform ' ~ plat1 ~ ' | Home ' ~ eta1) -%}\n  {%- if mins1
+          is not none and mins1 < 5 and valid | length > 1 -%}\n    {%- set t2 = valid[1]
+          -%}\n    {%- set t2_exp = t2.expected | as_timestamp(none) -%}\n    {%-
+          set mins2 = ((t2_exp - now().timestamp()) / 60) | int if t2_exp else none
+          -%}\n    {%- set dep2 = mins2 ~ 'min' if mins2 is not none else 'Delayed'
+          -%}\n    {%- set plat2 = t2.platform if t2.platform else 'TBC' -%}\n    {%-
+          set dest2 = t2.destinations[0].time_at_destination | as_timestamp(none)
+          if t2.destinations else none -%}\n    {%- set eta2 = (dest2 + 720) | timestamp_custom('%H:%M',
+          True) if dest2 else '?' -%}\n    {%- set ns.msg = ns.msg ~ '\\n' ~ 'Following:
+          ' ~ dep2 ~ ' | Platform ' ~ plat2 ~ ' | Home ' ~ eta2 -%}\n  {%- endif -%}\n
+          \ {{ ns.msg }}\n{%- else -%}\n  No trains available\n{%- endif -%}"
+      action: notify.mobile_app_colin_s_phone
+    - data:
+        timestamp: '{%- set trains = state_attr(''sensor.train_schedule_wat_wok'',
+          ''trains'') | default([]) -%} {%- set valid = trains | rejectattr(''expected'',
+          ''equalto'', ''Cancelled'') | list -%} {%- set dest = valid[0].destinations[0].time_at_destination
+          | as_timestamp(none) if valid and valid[0].destinations else none -%} {{
+          (dest + 720) if dest else now().timestamp() + 3600 }}'
+      target:
+        entity_id: input_datetime.colin_eta
+      action: input_datetime.set_datetime
   mode: single
 - id: '1650315246109'
   alias: Garden Sprinkler
-  description: >-
-    Scheduled Tue/Fri (skips if rain forecast) or triggered manually via
+  description: Scheduled Tue/Fri (skips if rain forecast) or triggered manually via
     input_boolean.sprinkler. Stops at target litres, max time, or manual off.
   triggers:
   - platform: time
@@ -701,9 +696,9 @@
         - tue
         - fri
   - condition: template
-    value_template: "{{ states('input_number.water_quantity') | float(0) > 0 }}"
+    value_template: '{{ states(''input_number.water_quantity'') | float(0) > 0 }}'
   variables:
-    start_usage: "{{ states('sensor.hosepipe_usage') | float(0) }}"
+    start_usage: '{{ states(''sensor.hosepipe_usage'') | float(0) }}'
   actions:
   - action: input_boolean.turn_on
     target:
@@ -714,16 +709,15 @@
     domain: switch
   - wait_for_trigger:
     - platform: template
-      value_template: >-
-        {{ (states('sensor.hosepipe_usage') | float(0) - start_usage) * 1000
-        >= states('input_number.water_quantity') | float(50) }}
+      value_template: '{{ (states(''sensor.hosepipe_usage'') | float(0) - start_usage)
+        * 1000 >= states(''input_number.water_quantity'') | float(50) }}'
       id: quantity
     - platform: state
       entity_id: input_boolean.sprinkler
       to: 'off'
       id: manual_stop
     timeout:
-      minutes: "{{ states('input_number.water_timer') | int(20) }}"
+      minutes: '{{ states(''input_number.water_timer'') | int(20) }}'
     continue_on_timeout: true
   - type: turn_off
     device_id: 945a64d3fdc7c8f9643f2b795deb0b46
@@ -734,12 +728,10 @@
       entity_id: input_boolean.sprinkler
   - data:
       title: Garden Sprinkler
-      message: >-
-        Watering complete. Used {{ ((states('sensor.hosepipe_usage') | float(0)
-        - start_usage) * 1000) | round(1) }}L
-        ({{ 'target reached' if wait.trigger.id == 'quantity' else
-        'manually stopped' if wait.trigger.id == 'manual_stop' else
-        'time limit reached' }})
+      message: Watering complete. Used {{ ((states('sensor.hosepipe_usage') | float(0)
+        - start_usage) * 1000) | round(1) }}L ({{ 'target reached' if wait.trigger.id
+        == 'quantity' else 'manually stopped' if wait.trigger.id == 'manual_stop'
+        else 'time limit reached' }})
     action: notify.mobile_app_colin_s_phone
   mode: single
 - id: '1658578038834'
@@ -873,7 +865,7 @@
       message: Home occupied, enabling heating.
       data:
         tag: occupancy-home
-  - action: climate.set_preset_mode
+  - action: climate.turn_on
     target:
       entity_id:
       - climate.bathroom_radiator
@@ -881,8 +873,7 @@
       - climate.landing_radiator
       - climate.office_radiator
       - climate.spare_room_radiator
-    data:
-      preset_mode: home
+    data: {}
   - action: climate.set_preset_mode
     target:
       entity_id:
@@ -1510,11 +1501,11 @@
     entity_id:
     - sensor.ups_status
     not_from:
-      - unavailable
-      - unknown
+    - unavailable
+    - unknown
     not_to:
-      - unavailable
-      - unknown
+    - unavailable
+    - unknown
   conditions: []
   actions:
   - action: notify.mobile_app_colin_s_phone
@@ -1755,7 +1746,7 @@
       - climate.living_room
     data:
       preset_mode: eco
-  - action: climate.set_preset_mode
+  - action: climate.turn_off
     target:
       entity_id:
       - climate.bathroom_radiator
@@ -1763,6 +1754,5 @@
       - climate.bedroom_radiator
       - climate.office_radiator
       - climate.spare_room_radiator
-    data:
-      preset_mode: away
+    data: {}
   mode: single
