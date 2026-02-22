@@ -312,37 +312,6 @@
       entity_id: input_boolean.occupancy_motion_suppressed
     data: {}
   mode: single
-- id: '1622926900544'
-  alias: Heating  - Off if Kitchen Window is Open
-  description: ''
-  use_blueprint:
-    path: killer_tadpole/window-open-heating-off.yaml
-    input:
-      window_entity: binary_sensor.kitchen_windows
-      minimum_open_time: 30
-      climate_target: climate.kitchen
-- id: '1622985326125'
-  alias: Blinds - Kitchen Window Open
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.kitchen_windows
-    from: 'on'
-    to: 'off'
-    for: 00:00:02
-  condition:
-  - condition: numeric_state
-    entity_id: sun.sun
-    attribute: elevation
-    below: -3.1
-  - condition: state
-    entity_id: binary_sensor.kitchen_windows
-    state: 'off'
-  action:
-  - service: cover.close_cover
-    target:
-      entity_id: cover.kitchen
-  mode: single
 - id: '1626608954403'
   alias: Blinds - Sun Protection
   description: ''
