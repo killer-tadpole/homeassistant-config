@@ -582,23 +582,20 @@
   mode: single
 - id: '1643535985038'
   alias: Heating - Hot Water After Climbing
-  description: ''
-  trigger:
+  description: Boosts hot water when Colin leaves the climbing gym (06:00–23:00).
+  triggers:
   - platform: zone
     entity_id: person.colin
     zone: zone.craggy
     event: leave
-  condition: []
-  action:
-  - service: notify.mobile_app_colin_s_phone
-    data:
-      message: After Climbing Hot Water - 30min
-      title: Hot Water
-  - service: tado.set_water_heater_timer
+  conditions:
+  - condition: time
+    after: '06:00'
+    before: '23:00'
+  actions:
+  - action: input_boolean.turn_on
     target:
-      entity_id: water_heater.hot_water
-    data:
-      time_period: 00:30:00
+      entity_id: input_boolean.hot_water
   mode: single
 - id: '1647292660060'
   alias: Notify - Commute Home
@@ -919,17 +916,9 @@
       state: 'off'
       for: '12:00:00'
     then:
-    - action: tado.set_water_heater_timer
+    - action: input_boolean.turn_on
       target:
-        entity_id: water_heater.hot_water
-      data:
-        time_period: 00:30:00
-    - action: notify.mobile_app_colin_s_phone
-      data:
-        title: Hot Water
-        message: Water heater has been off >12h. Boosting for 30m.
-        data:
-          tag: hot-water-boost
+        entity_id: input_boolean.hot_water
   mode: restart
 - id: '1668539161807'
   alias: Media - Volume Dial
@@ -1410,6 +1399,27 @@
         data:
           time_period: 01:00:00
         action: tado.set_water_heater_timer
+      - action: notify.mobile_app_colin_s_phone
+        data:
+          title: Hot Water
+          message: Boosting hot water for 1 hour.
+          data:
+            tag: hot-water-boost
+    - conditions:
+      - condition: trigger
+        id:
+        - UserOn
+      - condition: state
+        entity_id: binary_sensor.hot_water_power
+        state:
+        - 'on'
+      sequence:
+      - action: notify.mobile_app_colin_s_phone
+        data:
+          title: Hot Water
+          message: Already heating — no boost needed.
+          data:
+            tag: hot-water-boost
     - conditions:
       - condition: trigger
         id:
