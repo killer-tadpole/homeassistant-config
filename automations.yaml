@@ -797,52 +797,6 @@
       remote: ef646bbc6ed505e6f1d6b8df86beac8d
       light:
         device_id: c4363f0e4835ee3b96353f3fc5b70008
-- id: '1667807981062'
-  alias: Error - Heating
-  description: When bedroom needs heat but boiler is off
-  trigger:
-  - platform: state
-    entity_id: climate.bedroom_radiator
-    from: 'off'
-    to: heat
-    for: 00:01:00
-    id: NoHeat
-  - platform: template
-    value_template: "{{ state_attr('climate.bedroom_radiator', 'current_temperature')
-      | float(0)\n   > (state_attr('climate.landing', 'temperature') | float(0) +
-      1.5) }}\n"
-    id: TooHot
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id: NoHeat
-      - condition: state
-        entity_id: climate.landing
-        state: 'off'
-        for: 00:05:00
-      sequence:
-      - service: notify.mobile_app_colin_s_phone
-        data:
-          title: Heating Error
-          message: Radiator calling for heat while boiler is off
-    - conditions:
-      - condition: trigger
-        id: TooHot
-      - condition: state
-        entity_id: climate.bedroom_radiator
-        state: heat
-        for: 00:01:00
-      sequence:
-      - service: climate.turn_off
-        target:
-          entity_id: climate.bedroom_radiator
-      - service: notify.mobile_app_colin_s_phone
-        data:
-          title: Heating Error
-          message: Bedroom radiator overheated and was turned off
-  mode: single
 - id: '1668375702088'
   alias: Whole Home - Occupancy - Home
   triggers:
