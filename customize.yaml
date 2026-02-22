@@ -4,8 +4,6 @@ binary_sensor.frontdoor:
   device_class: door
 cover.living_room_blinds:
   icon: hass:blinds-open
-binary_sensor.kitchen_windows:
-  friendly_name: Kitchen Windows
 sensor.inverter_45a_horsell:
   device_class: power
   state_class: measurement
@@ -15,9 +13,6 @@ sensor.gas_consumption_today:
   unit_of_measurement: kWh
 sensor.electric_consumption_today:
   state_class: total_increasing
-sensor.excess_solar:
-  friendly_name: Excess Solar Generation
-  icon: mdi:white-balance-sunny
 sensor.washing_machine_eusage:
   state_class: total_increasing
   unit_of_measurement: kWh
