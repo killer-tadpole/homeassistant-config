@@ -657,9 +657,8 @@
       id: manual
     - condition: and
       conditions:
-      - condition: template
-        value_template: '{{ state_attr(''weather.45a_horsell_moor_hourly'', ''forecast'')
-          | sum(attribute=''precipitation'') <= 3 }}'
+      - condition: trigger
+        id: schedule
       - condition: time
         weekday:
         - tue
@@ -669,6 +668,27 @@
   variables:
     start_usage: '{{ states(''sensor.hosepipe_usage'') | float(0) }}'
   actions:
+  - if:
+    - condition: trigger
+      id: schedule
+    then:
+    - action: weather.get_forecasts
+      data:
+        type: hourly
+      target:
+        entity_id: weather.45a_horsell_moor
+      response_variable: forecast_response
+    - if:
+      - condition: template
+        value_template: >-
+          {{ forecast_response['weather.45a_horsell_moor']['forecast']
+             | sum(attribute='precipitation') > 3 }}
+      then:
+      - action: notify.mobile_app_colin_s_phone
+        data:
+          title: Garden Sprinkler
+          message: Skipping watering - rain forecast.
+      - stop: Rain forecast exceeds threshold
   - action: input_boolean.turn_on
     target:
       entity_id: input_boolean.sprinkler
