@@ -62,12 +62,14 @@ sensor:
   - platform: integration
     source: sensor.washing_machine_power
     name: washing_machine_eusage
+    unique_id: washing_machine_eusage
     unit_prefix: k
     round: 2
 
   - platform: integration
     source: sensor.dishwasher_power
     name: dishwasher_eusage
+    unique_id: dishwasher_eusage
     unit_prefix: k
     round: 2
 
