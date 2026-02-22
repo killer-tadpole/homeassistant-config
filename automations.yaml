@@ -877,7 +877,7 @@
     target:
       entity_id:
       - climate.bathroom_radiator
-      - climate.tado_smart_radiator_thermostat_va3500560384
+      - climate.bedroom_radiator
       - climate.landing_radiator
       - climate.office_radiator
       - climate.spare_room_radiator
@@ -1760,7 +1760,7 @@
       entity_id:
       - climate.bathroom_radiator
       - climate.landing_radiator
-      - climate.tado_smart_radiator_thermostat_va3500560384
+      - climate.bedroom_radiator
       - climate.office_radiator
       - climate.spare_room_radiator
     data:
