@@ -33,13 +33,6 @@ light:
 # --- TEMPLATE SENSORS ---
 template:
   - sensor:
-      - name: "Gas Consumption Today (Volume)"
-        unique_id: gas_consumption_today_m3
-        state: "{{ states('sensor.gas_consumption_today') | float(0) * 0.091 }}"
-        unit_of_measurement: "m³"
-        device_class: gas
-        state_class: total_increasing
-
       - name: "Washing Machine State"
         unique_id: washing_machine_state
         state: >

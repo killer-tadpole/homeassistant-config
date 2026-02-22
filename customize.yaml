@@ -4,10 +4,6 @@ binary_sensor.frontdoor:
   device_class: door
 cover.living_room_blinds:
   icon: hass:blinds-open
-sensor.gas_consumption_today:
-  state_class: total_increasing
-  device_class: energy
-  unit_of_measurement: kWh
 sensor.electric_consumption_today:
   state_class: total_increasing
 sensor.washing_machine_eusage:
