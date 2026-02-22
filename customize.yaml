@@ -4,9 +4,6 @@ binary_sensor.frontdoor:
   device_class: door
 cover.living_room_blinds:
   icon: hass:blinds-open
-sensor.inverter_45a_horsell:
-  device_class: power
-  state_class: measurement
 sensor.gas_consumption_today:
   state_class: total_increasing
   device_class: energy
