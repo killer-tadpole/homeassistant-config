@@ -21,15 +21,6 @@ zha:
   enable_quirks: true
   custom_quirks_path: /mnt/dietpi_userdata/homeassistant/zha_quirks
 
-light:
-  - platform: group
-    unique_id: Dining_Lights
-    name: 'Dining Table Lights'
-    entities:
-      - light.living_room_spot_window
-      - light.living_room_spot_door
-      - light.living_room_spot_middle
-
 # --- TEMPLATE SENSORS ---
 template:
   - sensor:
