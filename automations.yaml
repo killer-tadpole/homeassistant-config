@@ -1565,6 +1565,66 @@
           data:
             tag: CO2
   mode: single
+- id: '1770000000001'
+  alias: Heating - Pre-heat on Commute
+  description: >-
+    When Colin's ETA home is updated (train selected at Waterloo), pre-emptively
+    turn the heating on so the house reaches temperature before he arrives.
+    Lead time is configurable via input_number.heating_lead_time (default 30 min).
+    Uses mode: restart so a later train automatically recalculates the delay.
+  triggers:
+  - trigger: state
+    entity_id: input_datetime.colin_eta
+    id: ETAUpdated
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.home_occupied
+    state: 'off'
+  - condition: time
+    after: '12:00'
+    before: '22:00'
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  actions:
+  - variables:
+      eta_ts: "{{ as_timestamp(states('input_datetime.colin_eta')) }}"
+      lead_secs: "{{ states('input_number.heating_lead_time') | int(30) * 60 }}"
+      delay_secs: "{{ [((eta_ts - now().timestamp()) - lead_secs), 0] | max | int }}"
+  - delay:
+      seconds: "{{ delay_secs }}"
+  - condition: state
+    entity_id: binary_sensor.home_occupied
+    state: 'off'
+  - action: climate.turn_on
+    target:
+      entity_id:
+      - climate.bathroom_radiator
+      - climate.bedroom_radiator
+      - climate.landing_radiator
+      - climate.office_radiator
+      - climate.spare_room_radiator
+    data: {}
+  - action: climate.set_preset_mode
+    target:
+      entity_id:
+      - climate.kitchen
+      - climate.living_room
+    data:
+      preset_mode: none
+  - action: notify.mobile_app_colin_s_phone
+    data:
+      title: Heating
+      message: >-
+        Pre-heating home ahead of your arrival at
+        {{ as_timestamp(states('input_datetime.colin_eta')) | timestamp_custom('%H:%M') }}.
+      data:
+        tag: pre-heat
+  mode: restart
+
 - id: '1767570686009'
   alias: Plants – Detect watering
   description: ''
